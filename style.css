@@ -65,7 +65,7 @@
 }
 
 .menu li:first-child::after {
-	content: ">";
+	content: "❯";
 	margin-left: .5rem;
 }
 
@@ -84,17 +84,13 @@
 	background-color: #111;
 }
 
-.conteudo span {
-	font-family: 'Handuk';
-	font-size: 5rem;
-}
-
 .amarelo {
 	color: #DAB600;
 }
 
 .tracking-in-expand {
-	text-align: center;
+	font-family: 'Handuk';
+	font-size: 5rem;
 	animation: tracking-in-expand 3s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
 }
 
@@ -120,5 +116,19 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@media screen and (max-width: 767px) {
+ .menu {
+	width: 8rem;
+ }
+
+ .menu h1 {
+	padding: .2rem .3rem .3rem 1.2rem;
+ }
+
+	.tracking-in-expand {
+		font-size: 3.4rem;
   }
 }
