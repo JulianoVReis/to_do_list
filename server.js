@@ -4,10 +4,27 @@ const app = express()
 const porta = 3000
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.json())
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
+
+// Início código projeto
+
+let tarefas = [
+	{ nome: '01', finalizada: false },
+	{ nome: '02', finalizada: false },
+	{ nome: '03', finalizada: false },
+	{ nome: '04', finalizada: false },
+	{ nome: '05', finalizada: false }
+]
+
+app.get('/tarefas', (req, res) => {
+	res.json(tarefas)
+})
+
+// Fim código projeto
 
 app.listen(porta, () => {
 	console.log('Servidor rodando com sucesso!')
