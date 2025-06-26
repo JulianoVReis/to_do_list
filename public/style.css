@@ -97,6 +97,10 @@
 	color: #DAB600;
 }
 
+.tracking-in-expand img {
+	border-bottom: .2rem solid #F6F6F6;
+}
+
 @-webkit-keyframes tracking-in-expand {
   0% {
     letter-spacing: -0.5em;

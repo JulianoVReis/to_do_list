@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
-// Início código projeto
+// Início código to do list
 
 let tarefas = [
 	{ nome: '01', finalizada: false },
@@ -24,7 +24,13 @@ app.get('/tarefas', (req, res) => {
 	res.json(tarefas)
 })
 
-// Fim código projeto
+app.post('/adicionar', (req, res) => {
+	let nomeTarefa = req.body.nomeNovaTarefa
+	tarefas.push({nome: nomeTarefa, finalizada: false})
+	res.json(tarefas)
+})
+
+// Fim código to do list
 
 app.listen(porta, () => {
 	console.log('Servidor rodando com sucesso!')
