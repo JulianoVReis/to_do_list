@@ -30,6 +30,18 @@ app.post('/adicionar', (req, res) => {
 	res.json(tarefas)
 })
 
+app.post('/editar', (req, res) => {
+	let nomeAntigo = req.body.nomeAntigo
+	let nomeNovo = req.body.nomeNovo
+
+	for (let tarefa of tarefas) {
+		if (tarefa.nome === nomeAntigo) {
+			tarefa.nome = nomeNovo
+		}
+	}
+	res.json(tarefas)
+})
+
 // Fim código to do list
 
 app.listen(porta, () => {
