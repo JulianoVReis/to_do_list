@@ -59,6 +59,15 @@ app.post('/mudarStatus', (req, res) => {
 	res.json(tarefas)
 })
 
+app.post('/reordenar', (req, res) => {
+	const novaOrdem = req.body.ordem
+
+	tarefas = novaOrdem.map(nome => tarefas.find(tarefa => tarefa.nome === nome)).filter(Boolean)
+
+	res.sendStatus(200)
+})
+
+
 app.delete('/excluirFinalizadas', (req, res) => {
 	tarefas = tarefas.filter(tarefa => !tarefa.finalizada)
 	res.sendStatus(200)

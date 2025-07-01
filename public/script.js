@@ -32,20 +32,21 @@ async function carregarTarefas() {
 		let paragrafo = document.createElement('p')
 		let abbr = document.createElement('abbr')
 		abbr.textContent = tarefa.nome
+		paragrafo.setAttribute('draggable', true)
+		paragrafo.classList.add('draggable')
 		paragrafo.appendChild(abbr)
 
 		if (tarefa.finalizada && tarefa.finalizadaEm) {
-	const data = new Date(tarefa.finalizadaEm)
-	const formatada = data.toLocaleString('pt-BR')
-	abbr.title = `Finalizada em: ${formatada}`
-} else if (tarefa.criadaEm) {
-	const data = new Date(tarefa.criadaEm)
-	const formatada = data.toLocaleString('pt-BR')
-	abbr.title = `Criada em: ${formatada}`
-} else {
-	abbr.title = 'Data não disponível'
-}
-
+			const data = new Date(tarefa.finalizadaEm)
+			const formatada = data.toLocaleString('pt-BR')
+			abbr.title = `Finalizada em: ${formatada}`
+		} else if (tarefa.criadaEm) {
+			const data = new Date(tarefa.criadaEm)
+			const formatada = data.toLocaleString('pt-BR')
+			abbr.title = `Criada em: ${formatada}`
+		} else {
+			abbr.title = 'Data não disponível'
+		}
 
 		let spanContainer = document.createElement('span')
 		paragrafo.appendChild(spanContainer)
@@ -67,6 +68,9 @@ async function carregarTarefas() {
 			spanX.title = 'Clique para finalizar a tarefa'
 			spanX.onclick = () => mudarStatus(tarefa.nome)
 			spanContainer.appendChild(spanX)
+
+			let info = document.querySelector('.info')
+			info.title = 'Segure e arraste para reordenar'
 		} else {
 			let spanX = document.createElement('span')
 			spanX.textContent = 'Restaurar'
@@ -94,6 +98,104 @@ async function carregarTarefas() {
 	if (finalizadasCount === 0) {
 		modalFinalizadas.innerHTML = '<div class="vazio">----------</div>'
 	}
+	ativarDragAndDrop()
+	ativarDragTouch()
+}
+
+function ativarDragAndDrop() {
+  const container = document.querySelector('.modal-pendentes')
+  let draggedElement = null
+
+  container.querySelectorAll('p').forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      draggedElement = item
+      e.dataTransfer.effectAllowed = 'move'
+      item.classList.add('dragging')
+    })
+
+    item.addEventListener('dragend', async () => {
+  if (draggedElement) {
+    draggedElement.classList.remove('dragging')
+  }
+  draggedElement = null
+
+  const novaOrdem = Array.from(container.querySelectorAll('p'))
+    .map(p => p.querySelector('abbr')?.textContent.trim())
+
+  console.log('Nova ordem:', novaOrdem)
+
+  await fetch('/reordenar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ordem: novaOrdem })
+  })
+})
+
+
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'move'
+
+      const bounding = item.getBoundingClientRect()
+      const offset = e.clientY - bounding.top
+      const middle = bounding.height / 2
+
+      const container = item.parentNode
+      if (offset > middle) {
+        container.insertBefore(draggedElement, item.nextSibling)
+      } else {
+        container.insertBefore(draggedElement, item)
+      }
+    })
+  })
+}
+
+function ativarDragTouch() {
+  const container = document.querySelector('.modal-pendentes')
+  let touchDrag = null
+
+  container.querySelectorAll('p').forEach(item => {
+    item.addEventListener('touchstart', (e) => {
+      touchDrag = item
+      item.classList.add('dragging')
+    })
+
+    item.addEventListener('touchend', async (e) => {
+  if (touchDrag) {
+    touchDrag.classList.remove('dragging')
+    touchDrag = null
+
+    const novaOrdem = Array.from(container.querySelectorAll('p'))
+      .map(p => p.querySelector('abbr')?.textContent.trim())
+
+    console.log('Nova ordem (touch):', novaOrdem)
+
+    await fetch('/reordenar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ordem: novaOrdem })
+    })
+  }
+})
+
+    item.addEventListener('touchmove', (e) => {
+      e.preventDefault()
+      const touch = e.touches[0]
+      const el = document.elementFromPoint(touch.clientX, touch.clientY)
+
+      if (el && el.tagName === 'P' && el !== touchDrag) {
+        const container = el.parentNode
+        const bounding = el.getBoundingClientRect()
+        const middle = bounding.top + bounding.height / 2
+
+        if (touch.clientY > middle) {
+          container.insertBefore(touchDrag, el.nextSibling)
+        } else {
+          container.insertBefore(touchDrag, el)
+        }
+      }
+    }, { passive: false })
+  })
 }
 
 deletar.addEventListener('click', async () => {
@@ -109,6 +211,7 @@ deletar.addEventListener('click', async () => {
 
 addTarefa.addEventListener('click', async () => {
 	let nomeNovaTarefa = document.querySelector('#caixaTarefa').value.trim()
+	if (nomeNovaTarefa === '') return;
 	await fetch('/adicionar', {
 		method: 'POST',
 		headers: {'Content-Type': 'application/json'},

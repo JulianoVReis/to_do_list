@@ -433,6 +433,11 @@ abbr {
 	display: none;
 }
 
+.dragging {
+  opacity: .4;
+  background-color: #333;
+}
+
 @media screen and (max-width: 767px) {
 	.menu {
 		width: 7rem;
