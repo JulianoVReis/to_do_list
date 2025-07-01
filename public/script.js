@@ -212,11 +212,17 @@ deletar.addEventListener('click', async () => {
 addTarefa.addEventListener('click', async () => {
 	let nomeNovaTarefa = document.querySelector('#caixaTarefa').value.trim()
 	if (nomeNovaTarefa === '') return;
-	await fetch('/adicionar', {
-		method: 'POST',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({nomeNovaTarefa})
-	})
+	const resposta = await fetch('/adicionar', {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ nomeNovaTarefa })
+})
+
+if (resposta.status === 409) {
+	alert('Essa tarefa já existe.')
+	return
+}
+
 	document.querySelector('#caixaTarefa').value = ''
 	carregarTarefas()
 })
@@ -239,11 +245,17 @@ btnSalvar.addEventListener('click', async () => {
 		return
 	}
 
-	await fetch('/editar', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ nomeAntigo: nomeAntigoGlobal, nomeNovo })
-	})
+	const resposta = await fetch('/editar', {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ nomeAntigo: nomeAntigoGlobal, nomeNovo })
+})
+
+if (resposta.status === 409) {
+	alert('Já existe uma tarefa com esse nome.')
+	return
+}
+
 
 	inputEditar.value = ''
 	modalEditar.classList.add('hidden')

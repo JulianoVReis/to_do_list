@@ -25,39 +25,89 @@ app.get('/tarefas', (req, res) => {
 })
 
 app.post('/adicionar', (req, res) => {
-	let nomeTarefa = req.body.nomeNovaTarefa
-	tarefas.push({nome: nomeTarefa, finalizada: false, criadaEm: new Date()})
-	res.json(tarefas)
+	const nomeTarefa = req.body.nomeNovaTarefa?.trim()
+	if (!nomeTarefa) {
+		return res.status(400).json({ erro: 'Nome da tarefa é obrigatório.' })
+	}
+
+	const jaExiste = tarefas.some(t =>
+		t.nome.trim().toLowerCase() === nomeTarefa.toLowerCase()
+	)
+
+	if (jaExiste) {
+		return res.status(409).json({ erro: 'Tarefa já existe.' })
+	}
+
+	tarefas.push({ nome: nomeTarefa, finalizada: false, criadaEm: new Date() })
+	res.status(201).json(tarefas)
 })
+
 
 app.post('/editar', (req, res) => {
-	let nomeAntigo = req.body.nomeAntigo
-	let nomeNovo = req.body.nomeNovo
+	const { nomeAntigo, nomeNovo } = req.body
+	let base = nomeNovo.trim()
+	let novoNome = base
+	let contador = 1
 
-	for (let tarefa of tarefas) {
-		if (tarefa.nome === nomeAntigo) {
-			tarefa.nome = nomeNovo
-		}
+	// Garante que o novo nome seja único
+	while (tarefas.some(t =>
+		t.nome.toLowerCase() === novoNome.toLowerCase() &&
+		t.nome !== nomeAntigo
+	)) {
+		contador++
+		novoNome = `${base} (${contador})`
 	}
+
+	const tarefa = tarefas.find(t => t.nome === nomeAntigo)
+
+	if (tarefa) {
+		tarefa.nome = novoNome
+	}
+
 	res.json(tarefas)
 })
+
+
 
 app.post('/mudarStatus', (req, res) => {
 	let nomeTarefa = req.body.nomeTarefa
+	let tarefa = tarefas.find(t => t.nome === nomeTarefa)
 
-	for (let tarefa of tarefas) {
-		if (tarefa.nome === nomeTarefa) {
-			tarefa.finalizada = !tarefa.finalizada
+	if (!tarefa) return res.status(404).json({ erro: 'Tarefa não encontrada.' })
 
-			if (tarefa.finalizada) {
-				tarefa.finalizadaEm = new Date()
-			} else {
-				delete tarefa.finalizadaEm
-			}
+	tarefa.finalizada = !tarefa.finalizada
+
+	if (tarefa.finalizada) {
+		tarefa.finalizadaEm = new Date()
+
+		
+		if (!tarefa.nome.endsWith(' ✅')) {
+			tarefa.nome += ' ✅'
 		}
+	} else {
+		delete tarefa.finalizadaEm
+
+		
+		let nomeBase = tarefa.nome.replace(' ✅', '').trim()
+		let novoNome = nomeBase
+		let contador = 1
+
+		
+		while (tarefas.some(t =>
+			!t.finalizada &&
+			t.nome.toLowerCase() === novoNome.toLowerCase() &&
+			t !== tarefa
+		)) {
+			contador++
+			novoNome = `${nomeBase} (${contador})`
+		}
+
+		tarefa.nome = novoNome
 	}
+
 	res.json(tarefas)
 })
+
 
 app.post('/reordenar', (req, res) => {
 	const novaOrdem = req.body.ordem

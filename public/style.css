@@ -12,6 +12,7 @@
 
 .container {
 	display: flex;
+	overflow: hidden;
 }
 
 .menu-header {
@@ -103,6 +104,10 @@ abbr::after {
     color: #888;
     margin-top: 2px;
   }
+
+abbr[title] {
+  pointer-events: none;
+}
 
 .amarelo {
 	color: #DAB600;
@@ -254,11 +259,17 @@ abbr::after {
 
 .modal-pendentes p:hover {
 	color: #DAB600;
+	background-image: linear-gradient(to right, #f6f6f60d, transparent);
 }
 
 .info {
+	display: block;
 	width: 1rem;
 	height: 1rem;
+}
+
+.info-resp {
+	display: none;
 }
 
 .finalizar {
@@ -320,6 +331,7 @@ abbr {
 
 .modal-finalizadas p:hover {
 	color: #DAB600;
+	background-image: linear-gradient(to right, #f6f6f60d, transparent);
 }
 
 .modal-finalizadas {
@@ -438,6 +450,51 @@ abbr {
   background-color: #333;
 }
 
+/* Para as barras de rolagem das listas pendentes e finalizadas */
+
+.modal-pendentes-box::-webkit-scrollbar,
+.modal-finalizadas-box::-webkit-scrollbar {
+  width: 0.625rem;  /* largura da barra (10px) */
+}
+
+.modal-pendentes-box::-webkit-scrollbar-track,
+.modal-finalizadas-box::-webkit-scrollbar-track {
+  background: #1E1E1E;  /* fundo escuro combinando com o modal */
+  border-radius: 0.3125rem; /* 5px */
+}
+
+.modal-pendentes-box::-webkit-scrollbar-thumb,
+.modal-finalizadas-box::-webkit-scrollbar-thumb {
+  background-color: #DAB600;  /* amarelo que você usa no layout */
+  border-radius: 0.3125rem;  /* 5px */
+  border: 0.125rem solid #1E1E1E;  /* borda para espaçamento (2px) */
+}
+
+.modal-pendentes-box::-webkit-scrollbar-thumb:hover,
+.modal-finalizadas-box::-webkit-scrollbar-thumb:hover {
+  background-color: #b59000; /* amarelo mais escuro no hover */
+}
+
+/* Firefox */
+.modal-pendentes-box,
+.modal-finalizadas-box {
+  scrollbar-width: thin;
+  scrollbar-color: #DAB600 #1E1E1E;
+}
+
+
+
+@media screen and (max-width: 991px) {
+	.info {
+		display: none;
+	}
+
+	.info-resp {
+		display: block;
+		font-size: .6rem;
+	}
+}
+
 @media screen and (max-width: 767px) {
 	.menu {
 		width: 7rem;
@@ -453,7 +510,16 @@ abbr {
 
 	.menu li {
 		font-size: .9rem;
-		padding: .3rem rem .4rem .2rem;
+		padding: .3rem 0 .4rem .2rem;
+	}
+
+	.info {
+		display: none;
+	}
+
+	.info-resp {
+		display: block;
+		font-size: .6rem;
 	}
 
 	.tracking-in-expand {
