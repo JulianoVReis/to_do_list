@@ -13,11 +13,11 @@ app.get('/', (req, res) => {
 // Início código to do list
 
 let tarefas = [
-	{ nome: '01', finalizada: false },
-	{ nome: '02', finalizada: false },
-	{ nome: '03', finalizada: false },
-	{ nome: '04', finalizada: false },
-	{ nome: '05', finalizada: false }
+	{ nome: '01', finalizada: false, criadaEm: new Date() },
+	{ nome: '02', finalizada: false, criadaEm: new Date() },
+	{ nome: '03', finalizada: false, criadaEm: new Date() },
+	{ nome: '04', finalizada: false, criadaEm: new Date() },
+	{ nome: '05', finalizada: false, criadaEm: new Date() }
 ]
 
 app.get('/tarefas', (req, res) => {
@@ -26,7 +26,7 @@ app.get('/tarefas', (req, res) => {
 
 app.post('/adicionar', (req, res) => {
 	let nomeTarefa = req.body.nomeNovaTarefa
-	tarefas.push({nome: nomeTarefa, finalizada: false})
+	tarefas.push({nome: nomeTarefa, finalizada: false, criadaEm: new Date()})
 	res.json(tarefas)
 })
 
@@ -40,6 +40,28 @@ app.post('/editar', (req, res) => {
 		}
 	}
 	res.json(tarefas)
+})
+
+app.post('/mudarStatus', (req, res) => {
+	let nomeTarefa = req.body.nomeTarefa
+
+	for (let tarefa of tarefas) {
+		if (tarefa.nome === nomeTarefa) {
+			tarefa.finalizada = !tarefa.finalizada
+
+			if (tarefa.finalizada) {
+				tarefa.finalizadaEm = new Date()
+			} else {
+				delete tarefa.finalizadaEm
+			}
+		}
+	}
+	res.json(tarefas)
+})
+
+app.delete('/excluirFinalizadas', (req, res) => {
+	tarefas = tarefas.filter(tarefa => !tarefa.finalizada)
+	res.sendStatus(200)
 })
 
 // Fim código to do list

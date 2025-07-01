@@ -73,6 +73,19 @@
 	background-color: #DAB600;
 }
 
+@keyframes mover-seta {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.menu li:hover span {
+  animation: mover-seta 0.6s ease-in-out infinite;
+}
+
 .conteudo {
 	display: flex;
 	justify-content: center;
@@ -82,6 +95,14 @@
 	color: #F6F6F6;
 	background-color: #111;
 }
+
+abbr::after {
+    content: attr(title);
+    display: block;
+    font-size: 0.65rem;
+    color: #888;
+    margin-top: 2px;
+  }
 
 .amarelo {
 	color: #DAB600;
@@ -138,7 +159,7 @@
 	width: fit-content;
 	border-radius: .5rem;
 	position: absolute;
-	top: 11.5rem;
+	top: 12.1rem;
 	left: 10rem;
 	box-shadow: .2rem .2rem .3rem #00000031;
 	background-color: #1E1E1E;
@@ -181,18 +202,24 @@
 	position: absolute;
 	top: 12.1rem;
 	left: 10rem;
-	width: 28rem;
+	width: 29rem;
 	border-radius: .5rem;
 	background-color: #1E1E1E;
 	padding: 1rem;
 }
 
 .modal-pendentes-box h2 {
+	display: flex;
+	justify-content: space-between;
 	font-size: 1rem;
 	font-weight: 100;
 	border-bottom: .1rem solid #F6F6F6;
 	padding-bottom: .3rem;
 	margin-bottom: .5rem;
+}
+
+.modal-pendentes {
+	width: 100%;
 }
 
 .modal-pendentes p {
@@ -219,16 +246,19 @@
 .modal-pendentes p {
 	display: flex;
 	justify-content: space-between;
-	border-bottom: .1rem solid transparent;
+	border-bottom: .1rem solid #333;
 	transition: .3s;
 	padding: .1rem;
 	margin-bottom: .1rem;
 }
 
 .modal-pendentes p:hover {
-	width: 100%;
 	color: #DAB600;
-	border-bottom: .1rem solid #333;
+}
+
+.info {
+	width: 1rem;
+	height: 1rem;
 }
 
 .finalizar {
@@ -251,18 +281,57 @@ abbr {
 	position: absolute;
 	top: 12.1rem;
 	left: 10rem;
-	width: 28rem;
+	width: 29rem;
 	border-radius: .5rem;
 	background-color: #1E1E1E;
 	padding: 1rem;
 }
 
 .modal-finalizadas-box h2 {
+	display: flex;
+	justify-content: space-between;
 	font-size: 1rem;
 	font-weight: 100;
 	border-bottom: .1rem solid #F6F6F6;
 	padding-bottom: .3rem;
 	margin-bottom: .5rem;
+}
+
+.delete {
+	cursor: pointer;
+}
+
+.modal-finalizadas p abbr {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.modal-finalizadas p {
+	display: flex;
+	justify-content: space-between;
+	border-bottom: .1rem solid #333;
+	transition: .3s;
+	padding: .1rem;
+	margin-bottom: .1rem;
+}
+
+.modal-finalizadas p:hover {
+	color: #DAB600;
+}
+
+.modal-finalizadas {
+	width: 100%;
+}
+
+.restaurar {
+	color: #304529;
+}
+
+.restaurar:hover {
+	color: #02F614;
 }
 
 .modal-pendentes-box,
@@ -279,8 +348,7 @@ abbr {
 }
 
 .vazio {
-	width: 17rem;
-  margin-left: 40%;
+	text-align: center;
 }
 
 .editar-texto {
@@ -367,11 +435,20 @@ abbr {
 
 @media screen and (max-width: 767px) {
 	.menu {
-		width: 8rem;
+		width: 7rem;
 	}
 
 	.menu h1 {
-		padding: .3rem .3rem .3rem 1.2rem;
+		padding: .3rem .3rem .3rem .8rem;
+	}
+
+	.menu ul {
+		margin-left: .3rem;
+	}
+
+	.menu li {
+		font-size: .9rem;
+		padding: .3rem rem .4rem .2rem;
 	}
 
 	.tracking-in-expand {
@@ -383,16 +460,16 @@ abbr {
   }
 
 	.modal-criar {
-		left: 8.85rem;
+		left: 7.3rem;
 	}
 
 	.modal-pendentes-box {
-		width: 17rem;
-		left: 8.85rem;
+		width: 19rem;
+		left: 7.3rem;
 	}
 
 	.modal-finalizadas-box {
-		width: 17rem;
-		left: 8.85rem;
+		width: 19rem;
+		left: 7.3rem;
 	}
 }
