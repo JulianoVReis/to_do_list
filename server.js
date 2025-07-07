@@ -22,6 +22,7 @@ app.get('/tarefas', async (req, res) => {
     const resultado = await pool.query('SELECT * FROM tarefas ORDER BY ordem')
     res.json(resultado.rows)
   } catch (err) {
+		console.error('Erro ao buscar tarefas:', err)
     res.status(500).json({ erro: 'Erro ao buscar tarefas' })
   }
 })
