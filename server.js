@@ -3,14 +3,16 @@ const path = require('path')
 const { Pool } = require('pg')
 const app = express()
 const porta = 3000
+require('dotenv').config()
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:Cervantes@001@db.ozveswokxwumxblicfli.supabase.co:5432/postgres',
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 })
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
