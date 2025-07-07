@@ -20,12 +20,19 @@ app.get('/', (req, res) => {
 app.get('/tarefas', async (req, res) => {
   try {
     const resultado = await pool.query('SELECT * FROM tarefas ORDER BY ordem')
-    res.json(resultado.rows)
+    // formata as datas para ISO string, para garantir que o JSON tenha o formato certo
+    const tarefasFormatadas = resultado.rows.map(tarefa => ({
+      ...tarefa,
+      criadaEm: tarefa.criadaem ? tarefa.criadaem.toISOString() : null,
+      finalizadaEm: tarefa.finalizadaem ? tarefa.finalizadaem.toISOString() : null,
+    }))
+    res.json(tarefasFormatadas)
   } catch (err) {
-		console.error('Erro ao buscar tarefas:', err)
+    console.error('Erro ao buscar tarefas:', err)
     res.status(500).json({ erro: 'Erro ao buscar tarefas' })
   }
 })
+
 
 app.post('/adicionar', async (req, res) => {
   const nome = req.body.nomeNovaTarefa?.trim()
@@ -84,9 +91,8 @@ app.post('/mudarStatus', async (req, res) => {
 
     const tarefa = resultado.rows[0]
     const finalizada = !tarefa.finalizada
-    const finalizadaEm = finalizada ? new Date() : null
-    let nome = tarefa.nome.replace(' ✅', '').trim()
 
+    let nome = tarefa.nome.replace(' ✅', '').trim()
     if (finalizada) {
       nome = nome.endsWith(' ✅') ? nome : nome + ' ✅'
     } else {
@@ -105,15 +111,19 @@ app.post('/mudarStatus', async (req, res) => {
       nome = nomeTentado
     }
 
+    const finalizadaEm = finalizada ? new Date().toISOString() : null
+
     await pool.query(
       'UPDATE tarefas SET finalizada = $1, nome = $2, finalizadaEm = $3 WHERE id = $4',
       [finalizada, nome, finalizadaEm, tarefa.id]
     )
+
     res.sendStatus(200)
   } catch {
     res.sendStatus(500)
   }
 })
+
 
 app.post('/reordenar', async (req, res) => {
   const { ordem } = req.body
