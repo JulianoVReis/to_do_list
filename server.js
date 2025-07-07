@@ -13,7 +13,6 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 })
 
-
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
