@@ -219,7 +219,7 @@ addTarefa.addEventListener('click', async () => {
 })
 
 if (resposta.status === 409) {
-	alert('Essa tarefa já existe.')
+	mostrarToast('Essa tarefa já existe.')
 	return
 }
 
@@ -252,10 +252,9 @@ btnSalvar.addEventListener('click', async () => {
 })
 
 if (resposta.status === 409) {
-	alert('Já existe uma tarefa com esse nome.')
+	mostrarToast('Já existe uma tarefa com esse nome.')
 	return
 }
-
 
 	inputEditar.value = ''
 	modalEditar.classList.add('hidden')
@@ -271,7 +270,7 @@ async function mudarStatus(nomeTarefa) {
 	carregarTarefas()
 }
 
-// Início modal abrir e fechar
+
 function toggleModal(modalAtivo) {
 	const modais = [modalCriar, modalPendentesBox, modalFinalizadasBox]
 
@@ -296,7 +295,7 @@ function toggleModal(modalAtivo) {
 modal1.addEventListener('click', () => toggleModal(modalCriar))
 modal2.addEventListener('click', () => toggleModal(modalPendentesBox))
 modal3.addEventListener('click', () => toggleModal(modalFinalizadasBox))
-// Fim modal abrir e fechar
+
 
 document.addEventListener('click', (event) => {
 	const modais = [modalCriar, modalPendentesBox, modalFinalizadasBox]
@@ -321,3 +320,14 @@ document.addEventListener('click', (event) => {
 	}
 })
 
+function mostrarToast(msg, duracao = 3000) {
+	const toast = document.getElementById('toast')
+	toast.textContent = msg
+	toast.classList.add('show')
+	toast.classList.remove('hidden')
+
+	setTimeout(() => {
+		toast.classList.remove('show')
+		toast.classList.add('hidden')
+	}, duracao)
+}

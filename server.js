@@ -1,130 +1,141 @@
 const express = require('express')
 const path = require('path')
+const { Pool } = require('pg')
 const app = express()
 const porta = 3000
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 
+const pool = new Pool({
+  connectionString: 'postgresql://postgres:Cervantes@001@db.ozveswokxwumxblicfli.supabase.co:5432/postgres',
+  ssl: { rejectUnauthorized: false }
+})
+
 app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public', 'index.html'))
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
-// Início código to do list
-
-let tarefas = [
-	{ nome: '01', finalizada: false, criadaEm: new Date() },
-	{ nome: '02', finalizada: false, criadaEm: new Date() },
-	{ nome: '03', finalizada: false, criadaEm: new Date() },
-	{ nome: '04', finalizada: false, criadaEm: new Date() },
-	{ nome: '05', finalizada: false, criadaEm: new Date() }
-]
-
-app.get('/tarefas', (req, res) => {
-	res.json(tarefas)
+app.get('/tarefas', async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM tarefas ORDER BY ordem')
+    res.json(resultado.rows)
+  } catch (err) {
+    res.status(500).json({ erro: 'Erro ao buscar tarefas' })
+  }
 })
 
-app.post('/adicionar', (req, res) => {
-	const nomeTarefa = req.body.nomeNovaTarefa?.trim()
-	if (!nomeTarefa) {
-		return res.status(400).json({ erro: 'Nome da tarefa é obrigatório.' })
-	}
+app.post('/adicionar', async (req, res) => {
+  const nome = req.body.nomeNovaTarefa?.trim()
+  if (!nome) return res.status(400).json({ erro: 'Nome obrigatório' })
 
-	const jaExiste = tarefas.some(t =>
-		t.nome.trim().toLowerCase() === nomeTarefa.toLowerCase()
-	)
+  try {
+    const verifica = await pool.query('SELECT 1 FROM tarefas WHERE LOWER(nome) = LOWER($1)', [nome])
+    if (verifica.rowCount > 0) return res.status(409).json({ erro: 'Tarefa já existe' })
 
-	if (jaExiste) {
-		return res.status(409).json({ erro: 'Tarefa já existe.' })
-	}
-
-	tarefas.push({ nome: nomeTarefa, finalizada: false, criadaEm: new Date() })
-	res.status(201).json(tarefas)
+    await pool.query(
+      'INSERT INTO tarefas (nome, finalizada, criadaEm) VALUES ($1, false, NOW())',
+      [nome]
+    )
+    res.sendStatus(201)
+  } catch {
+    res.sendStatus(500)
+  }
 })
 
+app.post('/editar', async (req, res) => {
+  const { nomeAntigo, nomeNovo } = req.body
+  if (!nomeAntigo || !nomeNovo) return res.sendStatus(400)
 
-app.post('/editar', (req, res) => {
-	const { nomeAntigo, nomeNovo } = req.body
-	let base = nomeNovo.trim()
-	let novoNome = base
-	let contador = 1
+  try {
+    const resultado = await pool.query('SELECT * FROM tarefas WHERE nome = $1 LIMIT 1', [nomeAntigo])
+    if (resultado.rowCount === 0) return res.status(404).json({ erro: 'Tarefa não encontrada' })
 
-	// Garante que o novo nome seja único
-	while (tarefas.some(t =>
-		t.nome.toLowerCase() === novoNome.toLowerCase() &&
-		t.nome !== nomeAntigo
-	)) {
-		contador++
-		novoNome = `${base} (${contador})`
-	}
+    const tarefa = resultado.rows[0]
+    const baseNome = nomeNovo.trim()
+    let contador = 1
+    let nomeTentado = baseNome
 
-	const tarefa = tarefas.find(t => t.nome === nomeAntigo)
+    while (true) {
+      const existe = await pool.query(
+        'SELECT 1 FROM tarefas WHERE LOWER(nome) = LOWER($1) AND id != $2',
+        [nomeTentado, tarefa.id]
+      )
+      if (existe.rowCount === 0) break
+      nomeTentado = `${baseNome} (${contador++})`
+    }
 
-	if (tarefa) {
-		tarefa.nome = novoNome
-	}
-
-	res.json(tarefas)
+    await pool.query('UPDATE tarefas SET nome = $1 WHERE id = $2', [nomeTentado, tarefa.id])
+    res.sendStatus(200)
+  } catch {
+    res.sendStatus(500)
+  }
 })
 
+app.post('/mudarStatus', async (req, res) => {
+  const { nomeTarefa } = req.body
+  if (!nomeTarefa) return res.sendStatus(400)
 
+  try {
+    const resultado = await pool.query('SELECT * FROM tarefas WHERE nome = $1', [nomeTarefa])
+    if (resultado.rowCount === 0) return res.status(404).json({ erro: 'Tarefa não encontrada' })
 
-app.post('/mudarStatus', (req, res) => {
-	let nomeTarefa = req.body.nomeTarefa
-	let tarefa = tarefas.find(t => t.nome === nomeTarefa)
+    const tarefa = resultado.rows[0]
+    const finalizada = !tarefa.finalizada
+    const finalizadaEm = finalizada ? new Date() : null
+    let nome = tarefa.nome.replace(' ✅', '').trim()
 
-	if (!tarefa) return res.status(404).json({ erro: 'Tarefa não encontrada.' })
+    if (finalizada) {
+      nome = nome.endsWith(' ✅') ? nome : nome + ' ✅'
+    } else {
+      const baseNome = nome
+      let contador = 1
+      let nomeTentado = baseNome
 
-	tarefa.finalizada = !tarefa.finalizada
+      while (true) {
+        const existe = await pool.query(
+          'SELECT 1 FROM tarefas WHERE nome = $1 AND id != $2',
+          [nomeTentado, tarefa.id]
+        )
+        if (existe.rowCount === 0) break
+        nomeTentado = `${baseNome} (${contador++})`
+      }
+      nome = nomeTentado
+    }
 
-	if (tarefa.finalizada) {
-		tarefa.finalizadaEm = new Date()
-
-		
-		if (!tarefa.nome.endsWith(' ✅')) {
-			tarefa.nome += ' ✅'
-		}
-	} else {
-		delete tarefa.finalizadaEm
-
-		
-		let nomeBase = tarefa.nome.replace(' ✅', '').trim()
-		let novoNome = nomeBase
-		let contador = 1
-
-		
-		while (tarefas.some(t =>
-			!t.finalizada &&
-			t.nome.toLowerCase() === novoNome.toLowerCase() &&
-			t !== tarefa
-		)) {
-			contador++
-			novoNome = `${nomeBase} (${contador})`
-		}
-
-		tarefa.nome = novoNome
-	}
-
-	res.json(tarefas)
+    await pool.query(
+      'UPDATE tarefas SET finalizada = $1, nome = $2, finalizadaEm = $3 WHERE id = $4',
+      [finalizada, nome, finalizadaEm, tarefa.id]
+    )
+    res.sendStatus(200)
+  } catch {
+    res.sendStatus(500)
+  }
 })
 
+app.post('/reordenar', async (req, res) => {
+  const { ordem } = req.body
+  if (!Array.isArray(ordem)) return res.sendStatus(400)
 
-app.post('/reordenar', (req, res) => {
-	const novaOrdem = req.body.ordem
-
-	tarefas = novaOrdem.map(nome => tarefas.find(tarefa => tarefa.nome === nome)).filter(Boolean)
-
-	res.sendStatus(200)
+  try {
+    for (let i = 0; i < ordem.length; i++) {
+      await pool.query('UPDATE tarefas SET ordem = $1 WHERE nome = $2', [i, ordem[i]])
+    }
+    res.sendStatus(200)
+  } catch {
+    res.sendStatus(500)
+  }
 })
 
-
-app.delete('/excluirFinalizadas', (req, res) => {
-	tarefas = tarefas.filter(tarefa => !tarefa.finalizada)
-	res.sendStatus(200)
+app.delete('/excluirFinalizadas', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM tarefas WHERE finalizada = true')
+    res.sendStatus(200)
+  } catch {
+    res.sendStatus(500)
+  }
 })
-
-// Fim código to do list
 
 app.listen(porta, () => {
-	console.log('Servidor rodando com sucesso!')
+  console.log(`Servidor rodando em http://localhost:${porta}`)
 })

@@ -482,6 +482,28 @@ abbr {
   scrollbar-color: #DAB600 #1E1E1E;
 }
 
+#toast {
+	position: fixed;
+	top: 1rem;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #DAB600;
+	color: #111;
+	padding: .8rem 1.2rem;
+	border-radius: .4rem;
+	box-shadow: 0 0 .5rem #00000088;
+	z-index: 9999;
+	transition: opacity 0.3s ease;
+	opacity: 0;
+}
+
+#toast.show {
+	opacity: 1;
+}
+
+.hidden {
+	display: none !important;
+}
 
 
 @media screen and (max-width: 991px) {
@@ -529,6 +551,10 @@ abbr {
 	.tracking-in-expand img {
 		width: 1rem;
   }
+
+	.modal-1 span, .modal-2 span, .modal-3 span {
+		padding-right: .35rem;
+	}
 
 	.modal-criar {
 		left: 7.3rem;
