@@ -6,7 +6,7 @@ Este é um projeto de uma aplicação web de lista de tarefas (To Do List), com 
 
 ## 🖼️ Preview
 
-![Preview](img/preview.png)
+![Preview](public/img/preview.png)
 
 ## 🚀 Funcionalidades
 
