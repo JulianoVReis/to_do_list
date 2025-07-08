@@ -198,15 +198,22 @@ function ativarDragTouch() {
   })
 }
 
-deletar.addEventListener('click', async () => {
-	const confirmacao = confirm('Tem certeza que deseja excluir permanentemente todas as tarefas finalizadas?')
+const modalExcluir = document.querySelector('.modal-excluir')
+const btnConfirmarExclusao = document.querySelector('#btnSalvarExclusao')
+const btnCancelarExclusao = document.querySelector('#btnCancelarExclusao')
 
-	if (!confirmacao) return
+deletar.addEventListener('click', () => {
+  modalExcluir.classList.remove('hidden')
+})
 
-	await fetch('/excluirFinalizadas', {
-		method: 'DELETE'
-	})
-	carregarTarefas()
+btnCancelarExclusao.addEventListener('click', () => {
+  modalExcluir.classList.add('hidden')
+})
+
+btnConfirmarExclusao.addEventListener('click', async () => {
+  modalExcluir.classList.add('hidden')
+  await fetch('/excluirFinalizadas', { method: 'DELETE' })
+  carregarTarefas()
 })
 
 addTarefa.addEventListener('click', async () => {
