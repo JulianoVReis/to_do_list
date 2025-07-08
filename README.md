@@ -1,56 +1,63 @@
-# ✅ To Do List — Gerenciador de Tarefas
+# 📝 To Do List - Lista de Tarefas
 
-Uma aplicação web interativa para gerenciamento de tarefas, com foco em **organização, usabilidade e design responsivo**.
+Este é um projeto de uma aplicação web de lista de tarefas (To Do List), com foco em usabilidade, design moderno e funcionalidades intuitivas. Totalmente em **HTML, CSS e JavaScript puro**, a lista é armazenada no **`localStorage`** do navegador, o que garante que as tarefas permaneçam mesmo após recarregar a página.
 
----
+🔗 Acesse a aplicação: [https://todolistprojeto.netlify.app/](https://todolistprojeto.netlify.app/)
 
-## 🎯 Funcionalidades
+## 🖼️ Preview
 
-- ✅ Criar tarefas com nome único
-- ✏️ Editar tarefas existentes
-- 🔁 Marcar como finalizada ou restaurar
-- 📦 Reordenar tarefas pendentes via drag & drop (inclui suporte a toque)
-- 🗑️ Excluir todas as finalizadas com confirmação
-- 📅 Exibição de datas de criação e conclusão
-- 💬 Feedback visual com toasts
-- 💻 Interface responsiva com layout moderno
+![Preview](img/preview.png)
 
----
+## 🚀 Funcionalidades
 
-## 🧠 Tecnologias Utilizadas
+- ✅ Criar novas tarefas
+- 🛠️ Editar tarefas existentes
+- 🗑️ Finalizar e restaurar tarefas
+- ♻️ Excluir todas as tarefas finalizadas
+- 🔃 Reordenar tarefas pendentes com **drag-and-drop**
+- 🧠 Feedbacks visuais com **toast messages**
+- 💾 Dados salvos localmente via `localStorage`
 
-- **Frontend:** HTML, CSS, JavaScript puro
-- **Backend:** Node.js + Express
-- **Banco de Dados:** PostgreSQL
+## 📸 Interface
 
----
+A interface possui:
+- Um menu lateral com animações nas setas
+- Modal flutuante para criar, visualizar, editar e excluir tarefas
+- Responsividade para diferentes tamanhos de tela
+- Estilo escuro com detalhes em amarelo
 
-## 🌐 Demonstração
+## 🧑‍💻 Tecnologias utilizadas
 
-🔗 Acesse a aplicação: [https://to-do-list-ws16.onrender.com](https://to-do-list-ws16.onrender.com)
+- HTML5
+- CSS3 (com animações e responsividade)
+- JavaScript (DOM, eventos, `localStorage`, drag-and-drop)
 
----
+## 📂 Estrutura de Pastas
 
-## 📸 Capturas de Tela
+```
+📁 projeto-to-do-list/
+├── 📁 font/
+│   └── Handuk.otf
+├── 📁 img/
+│   ├── check.png
+│   ├── delete.png
+│   ├── info.png
+│   └── lapis.png
+├── index.html
+├── style.css
+└── script.js
+```
 
-![Preview da aplicação](public/img/Screenshot.png)
+## ℹ️ Observações
 
----
+- O `localStorage` é específico por navegador e dispositivo. Tarefas criadas em um navegador não aparecem em outro.
+- Se quiser limpar as tarefas, use o botão de exclusão de finalizadas ou limpe o `localStorage` manualmente.
 
-## 📄 Observações
+## 📜 Licença
 
-- Os dados são armazenados em banco PostgreSQL na nuvem
-- O back-end pode levar alguns segundos para "acordar" no plano gratuito da Render
-- O projeto não acompanha o arquivo `.env` por segurança
+Este projeto é de uso livre para fins pessoais e educacionais.
 
----
+## 🙋‍♂️ Autor
 
-## 🙌 Sobre
-
-Desenvolvido por [Juliano Reis](https://github.com/JulianoVReis) como parte de um projeto pessoal com fins de aprendizado e demonstração.
-
----
-
-## 🛡️ Licença
-
-Uso livre para fins pessoais e educacionais.
+**Juliano Reis**  
+Projeto pessoal criado com fins de aprendizado e prática de desenvolvimento web front-end.
