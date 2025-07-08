@@ -1,63 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="img/check.png" type="image/x-icon">
-	<link rel="stylesheet" href="style.css">
-	<title>To Do List</title>
-</head>
-<body>
-	<div class="container">
-		<header class="menu-header">
-			<nav class="menu">
-				<div class="modal-criar modal">
-					<h2>Crie uma Tarefa</h2>
-					<input type="text" id="caixaTarefa" placeholder="Digite aqui a sua tarefa...">
-					<button class="adicionar-tarefa">Adicionar</button>
-				</div>
-				<div class="modal-pendentes-box modal">
-					<h2>Tarefas Pendentes<img class="info" src="img/info.png" alt="Informação"><span class="info-resp">Segure e arraste<br>para reordenar</span></h2>
-					<span class="modal-pendentes"></span>
-				</div>
-				<div class="modal-finalizadas-box modal">
-					<h2>Tarefas Finalizadas <img class="delete" src="img/delete.png" alt="Delete"></h2>
-					<span class="modal-finalizadas"></span>
-				</div>
-				<h1><a href="index.html">TAREFAS</a></h1>
-				<ul>
-					<li class="modal-1">Criar Tarefa<span>❯</span></li>
-					<li class="modal-2">Pendentes<span>❯</span></li>
-					<li class="modal-3">Finalizadas<span>❯</span></li>
-				</ul>
-			</nav>
-		</header>
-		<main class="conteudo">
-			<p class="tracking-in-expand">To Do List <img class="lapis" src="img/lapis.png" alt="Lapis"></p>
-		</main>
-	</div>
-	<div class="modal-editar hidden">
-	<div class="modal-editar-conteudo">
-		<h2>Editar Tarefa</h2>
-		<input type="text" id="inputEditar">
-		<div class="botoes-editar">
-			<button id="btnSalvar">Salvar</button>
-			<button id="btnCancelar">Cancelar</button>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="img/check.png" type="image/x-icon" />
+		<link rel="stylesheet" href="style.css" />
+		<title>To Do List</title>
+	</head>
+	<body>
+		<div class="container">
+			<header class="menu-header">
+				<nav class="menu">
+					<div class="modal-criar modal">
+						<h2>Crie uma Tarefa</h2>
+						<input type="text" id="caixaTarefa" placeholder="Digite aqui a sua tarefa..." />
+						<button class="adicionar-tarefa">Adicionar</button>
+					</div>
+					<div class="modal-pendentes-box modal">
+						<h2>
+							Tarefas Pendentes<img class="info" src="img/info.png" alt="Informação" /><span class="info-resp">Segure e arraste<br />para reordenar</span>
+						</h2>
+						<span class="modal-pendentes"></span>
+					</div>
+					<div class="modal-finalizadas-box modal">
+						<h2>Tarefas Finalizadas <img class="delete" src="img/delete.png" alt="Delete" /></h2>
+						<span class="modal-finalizadas"></span>
+					</div>
+					<h1><a href="index.html">TAREFAS</a></h1>
+					<ul>
+						<li class="modal-1">Criar Tarefa<span>❯</span></li>
+						<li class="modal-2">Pendentes<span>❯</span></li>
+						<li class="modal-3">Finalizadas<span>❯</span></li>
+					</ul>
+				</nav>
+			</header>
+			<main class="conteudo">
+				<p class="tracking-in-expand">To Do List <img class="lapis" src="img/lapis.png" alt="Lapis" /></p>
+			</main>
 		</div>
-	</div>
-</div>
-<div id="toast" class="hidden">Mensagem</div>
-<div class="modal-excluir hidden">
-  <div class="modal-editar-conteudo delete-box">
-    <h2>Excluir Tarefas</h2>
-    <p>Tem certeza que deseja excluir <br> todas as tarefas finalizadas?</p>
-    <div class="botoes-editar">
-      <button id="btnSalvarExclusao">Sim</button>
-      <button id="btnCancelarExclusao">Cancelar</button>
-    </div>
-  </div>
-</div>
+		<div class="modal-editar hidden">
+			<div class="modal-editar-conteudo">
+				<h2>Editar Tarefa</h2>
+				<input type="text" id="inputEditar" />
+				<div class="botoes-editar">
+					<button id="btnSalvar">Salvar</button>
+					<button id="btnCancelar">Cancelar</button>
+				</div>
+			</div>
+		</div>
+		<div id="toast" class="hidden">Mensagem</div>
+		<div class="modal-excluir hidden">
+			<div class="modal-editar-conteudo delete-box">
+				<h2>Excluir Tarefas</h2>
+				<p>
+					Tem certeza que deseja excluir <br />
+					todas as tarefas finalizadas?
+				</p>
+				<div class="botoes-editar">
+					<button id="btnSalvarExclusao">Sim</button>
+					<button id="btnCancelarExclusao">Cancelar</button>
+				</div>
+			</div>
+		</div>
 
-	<script src="script.js"></script>
-</body>
+		<script src="script.js"></script>
+	</body>
 </html>
