@@ -62,7 +62,7 @@ async function carregarTarefas() {
 			spanContainer.appendChild(spanEdit);
 
 			let spanX = document.createElement("span");
-			spanX.textContent = "Remover";
+			spanX.textContent = "Finalizar";
 			spanX.style.fontSize = ".8rem";
 			spanX.classList.add("finalizar");
 			spanX.title = "Clique para finalizar a tarefa";
