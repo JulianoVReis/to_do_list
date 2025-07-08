@@ -93,21 +93,23 @@ app.post('/mudarStatus', async (req, res) => {
     const finalizada = !tarefa.finalizada
 
     let nome = tarefa.nome.replace(' ✅', '').trim()
-    if (finalizada) {
-      nome = nome.endsWith(' ✅') ? nome : nome + ' ✅'
-    } else {
-      const baseNome = nome
-      let contador = 1
-      let nomeTentado = baseNome
+    const baseNome = nome
+    let contador = 1
+    let nomeTentado = baseNome
 
-      while (true) {
-        const existe = await pool.query(
-          'SELECT 1 FROM tarefas WHERE nome = $1 AND id != $2',
-          [nomeTentado, tarefa.id]
-        )
-        if (existe.rowCount === 0) break
-        nomeTentado = `${baseNome} (${contador++})`
-      }
+    // ⚠️ Verificar duplicação de nome ao mudar status (seja para finalizada ou não)
+    while (true) {
+      const existe = await pool.query(
+        'SELECT 1 FROM tarefas WHERE LOWER(nome) = LOWER($1) AND id != $2',
+        [finalizada ? nomeTentado + ' ✅' : nomeTentado, tarefa.id]
+      )
+      if (existe.rowCount === 0) break
+      nomeTentado = `${baseNome} (${contador++})`
+    }
+
+    if (finalizada) {
+      nome = nomeTentado + ' ✅'
+    } else {
       nome = nomeTentado
     }
 
@@ -123,7 +125,6 @@ app.post('/mudarStatus', async (req, res) => {
     res.sendStatus(500)
   }
 })
-
 
 app.post('/reordenar', async (req, res) => {
   const { ordem } = req.body
